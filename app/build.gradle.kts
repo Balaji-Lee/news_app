@@ -80,5 +80,9 @@ dependencies {
     // For Material 3 components
     implementation ("androidx.activity:activity-compose:1.7.2")
     implementation ("androidx.compose.material3:material3:1.2.0")
+    implementation(kotlin("script-runtime"))
+
+    //For Image loading Library
+    implementation ("io.coil-kt:coil-compose:2.0.0")
 
 }

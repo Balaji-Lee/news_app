@@ -1,6 +1,5 @@
-package com.example.mykotlinapp.ui
+package com.example.mykotlinapp.activity
 
-import android.nfc.Tag
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
@@ -11,6 +10,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.mykotlinapp.BaseActivity
 
 class TestActivity : BaseActivity() {
@@ -25,6 +25,8 @@ class TestActivity : BaseActivity() {
         }
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Preview(showBackground = true)
     @Composable
     fun MyApp() {
         // Scaffold gives a structure with a TopAppBar
@@ -45,7 +47,7 @@ class TestActivity : BaseActivity() {
                 ) {
                     Text(
                         text = "Hi Balaji",
-                        color = Color.White
+                        color = Color.Black
                     )
                 }
             }

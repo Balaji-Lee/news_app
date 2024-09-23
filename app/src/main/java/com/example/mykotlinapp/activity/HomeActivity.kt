@@ -1,15 +1,24 @@
-package com.example.mykotlinapp.ui
+package com.example.mykotlinapp.activity
 
+import CustomTopAppBar
 import android.os.Bundle
-import android.widget.TextView
+import android.util.Log
+import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import com.example.mykotlinapp.BaseActivity
 import com.example.mykotlinapp.MyApplication
-import com.example.mykotlinapp.R
+import com.example.mykotlinapp.model.dto.ArticleDTO
 import com.example.mykotlinapp.model.dto.NewsResponceDTO
-
+import com.example.mykotlinapp.ui.screens.homeScreenComposable
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -18,51 +27,37 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 class HomeActivity : BaseActivity() {
 
     private val compositeDisposable = CompositeDisposable()
-
+    var totalRecordsState = mutableStateOf("Loading...")
+    private var record by mutableStateOf<List<ArticleDTO>>(emptyList())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_home)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
 
+        setContent{
+            homeScreenComposable(totalRecordsState.value, record)
+        }
         fetchNews()
     }
 
     private fun fetchNews() {
-        // Get newsApiService from MyApplication
         val apiService = (application as MyApplication).newsApiService
-
-        val disposable = apiService.getNews(
-            "apple",
-            "2024-09-01",
-            "popularity",
-            "b5da8eca4ff548788f031e37c19bed7a"
-        )
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+        val disposable = apiService.getNews("tesla", "2024-09-01", "publishedAt", "b5da8eca4ff548788f031e37c19bed7a")
+            .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
             .subscribe({ response ->
                 val responseCode = response.code()
                 if (response.isSuccessful) {
-                    // Process the successful response
                     val NewsResponceDTO = response.body()
                     if (NewsResponceDTO != null) {
-                        // Update UI with news data
+                        Log.i("HomeActivity", "NewsResponceDTO: $NewsResponceDTO.")
                         updateTotalRecords(NewsResponceDTO)
                     } else {
-                        // Handle case where newsData is null
                         showError("No news data available")
                     }
                 } else {
-                    // Handle unsuccessful response
                     showError("Error $responseCode: ${response.message()}")
                 }
             }, { error ->
-                // Handle error
                 showError("An error occurred: ${error.message}")
             })
 
@@ -70,8 +65,11 @@ class HomeActivity : BaseActivity() {
     }
 
     private fun updateTotalRecords(newsData: NewsResponceDTO) {
-        findViewById<TextView>(R.id.total_record).text = "Total Records: ${newsData.totalResults}"
-        // Code to update UI with the news data
+        var result = "Total Records: ${newsData.totalResults}"
+        Log.i("HomeActivity", "updateTotalRecords: $result.")
+        totalRecordsState.value= result
+        record=newsData.articles
+
     }
 
     private fun showError(message: String) {
@@ -82,4 +80,5 @@ class HomeActivity : BaseActivity() {
         super.onDestroy()
         compositeDisposable.dispose()  // Dispose disposables to avoid memory leaks
     }
+
 }

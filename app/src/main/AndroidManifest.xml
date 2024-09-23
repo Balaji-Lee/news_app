@@ -21,10 +21,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".ui.HomeActivity"
-            android:exported="false"/>
-
-        <activity android:name=".ui.TestActivity"
+            android:name=".activity.HomeActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,8 +29,13 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".activity.TestActivity"
+            android:exported="false">
+
+        </activity>
+
         <activity
-            android:name=".ui.FlashScreenActivity"
+            android:name=".activity.FlashScreenActivity"
             android:exported="false" />
 
         <activity

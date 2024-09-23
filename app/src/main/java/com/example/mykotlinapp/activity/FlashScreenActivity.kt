@@ -1,4 +1,4 @@
-package com.example.mykotlinapp.ui
+package com.example.mykotlinapp.activity
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
