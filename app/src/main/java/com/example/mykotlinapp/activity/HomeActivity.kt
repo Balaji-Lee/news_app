@@ -1,19 +1,12 @@
 package com.example.mykotlinapp.activity
 
-import CustomTopAppBar
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import com.example.mykotlinapp.BaseActivity
 import com.example.mykotlinapp.MyApplication
 import com.example.mykotlinapp.model.dto.ArticleDTO
@@ -34,7 +27,7 @@ class HomeActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        setContent{
+        setContent {
             homeScreenComposable(totalRecordsState.value, record)
         }
         fetchNews()
@@ -42,8 +35,9 @@ class HomeActivity : BaseActivity() {
 
     private fun fetchNews() {
         val apiService = (application as MyApplication).newsApiService
-        val disposable = apiService.getNews("tesla", "2024-09-01", "publishedAt", "b5da8eca4ff548788f031e37c19bed7a")
-            .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        val disposable = apiService.getNews(
+            "tesla", "2024-09-01", "publishedAt", "b5da8eca4ff548788f031e37c19bed7a"
+        ).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
             .subscribe({ response ->
                 val responseCode = response.code()
                 if (response.isSuccessful) {
@@ -67,8 +61,8 @@ class HomeActivity : BaseActivity() {
     private fun updateTotalRecords(newsData: NewsResponceDTO) {
         var result = "Total Records: ${newsData.totalResults}"
         Log.i("HomeActivity", "updateTotalRecords: $result.")
-        totalRecordsState.value= result
-        record=newsData.articles
+        totalRecordsState.value = result
+        record = newsData.articles
 
     }
 
